@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Cost Estimator</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='indexStyle.css') }}">
+    <script>
+        function updateTransportModeOptions(distance) {
+            var transportModeSelect = document.getElementById('transport_mode');
+
+            // Clear current options
+            transportModeSelect.innerHTML = '';
+
+            // Conditionally add the transport modes based on distance
+            if (distance >= 300) {
+                var airplaneOption = new Option('Airplane', 'Airfare');
+                transportModeSelect.appendChild(airplaneOption);
+            }
+            if (distance <= 1000) {
+                var trainOption = new Option('Train', 'Train');
+                var busOption = new Option('Bus', 'Bus');
+                transportModeSelect.appendChild(trainOption);
+                transportModeSelect.appendChild(busOption);
+            }
+
+            // Ensure there's a fallback option if no transport mode fits
+            if (transportModeSelect.options.length === 0) {
+                transportModeSelect.appendChild(new Option('No Transport Available', '', true, true));
+            }
+        }
+
+        function loadCities() {
+            var country = document.getElementById('country').value;
+            fetch('/get_cities/' + country)
+                .then(response => response.json())
+                .then(cities => {
+                    var citySelect = document.getElementById('city');
+                    citySelect.innerHTML = '<option value="">Select City</option>';
+
+                    // Loop through cities and create options
+                    cities.forEach(cityData => {
+                        var option = document.createElement('option');
+                        option.value = cityData.City;  // Use city name as value
+                        option.dataset.distance = cityData.Distance;  // Store distance in a data attribute
+                        option.innerHTML = cityData.City;  // Only show city name in dropdown
+                        citySelect.appendChild(option);
+                    });
+
+                    // Add event listener to update transport mode options when a city is selected
+                    citySelect.addEventListener('change', function() {
+                        var selectedOption = this.options[this.selectedIndex];
+                        var distance = selectedOption.dataset.distance;  // Get distance from selected option
+                        updateTransportModeOptions(parseInt(distance));  // Update transport mode based on distance
+                    });
+                });
+        }
+
+        window.onload = function() {
+            loadCities();
+        };
+    </script>
+</head>
+<body>
+    <h1>Trip Cost Estimator</h1>
+
+    <form method="POST">
+        <label for="country">Country:</label>
+        <select name="country" id="country" onchange="loadCities()" required>
+            <option value="">Select Country</option>
+            {% for country in countries %}
+            <option value="{{ country }}" {% if country == selected_country %}selected{% endif %}>{{ country }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label for="city">City:</label>
+        <select name="city" id="city" required>
+            <option value="">Select City</option>
+            {% for city in available_cities %}
+            <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>{{ city }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label for="transport_mode">Mode of Transport:</label>
+        <select name="transport_mode" id="transport_mode" required>
+            <!-- Options will be dynamically added based on distance -->
+        </select>
+
+        <br><br>
+
+        <label for="stay_duration">Stay Duration (days):</label>
+        <input type="number" id="stay_duration" name="stay_duration" required>
+
+
+        <br><br>
+
+        <button type="submit">Calculate</button>
+    </form>
+</body>
+</html>

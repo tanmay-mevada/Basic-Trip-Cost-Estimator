@@ -1,0 +1,58 @@
+/* General Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #0c0c0c;
+    color: #D7D9CE;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;  /* Full screen height for centering */
+    margin: 0;
+}
+
+/* Center the main content */
+h1, h3, img, form {
+    text-align: center;
+    margin-bottom: 10px;  /* Add space between elements */
+}
+
+/* Image Styling */
+img {
+    border-radius: 10px;  /* Softer corner radius */
+    width: 60%;  /* Responsive image width */
+    max-width: 500px;  /* Limit max width on larger screens */
+    display: block;
+    margin: 20px auto;  /* Ensure it's centered */
+}
+
+/* Button Styling */
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* Center elements inside form */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    img {
+        width: 80%;
+    }
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Cost Result</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='resultStyle.css') }}">
+</head>
+<body>
+    <h1>Trip Cost Breakdown</h1>
+    <h3>Total Estimated Cost (INR): ₹{{ total_cost_min | round(2) }} - ₹{{ total_cost_max | round(2) }}</h3>
+
+<h3>Total Estimated Cost (USD): 
+    {% if total_cost_min_dollars is not none and total_cost_max_dollars is not none %}
+        ${{ total_cost_min_dollars | round(2) }} - ${{ total_cost_max_dollars | round(2) }}
+    {% else %}
+        N/A
+    {% endif %}
+</h3>
+
+    <img src="data:image/png;base64,{{ pie_chart_img }}" alt="Cost Pie Chart">
+    <br><br>
+    <form method="POST" action="{{ url_for('home') }}">
+        <button type="submit">Go back</button>
+    </form>
+    
+</body>
+</html>
